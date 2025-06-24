@@ -4,12 +4,12 @@
 
 1. Create a new repository on GitHub:
    ```bash
-   gh repo create decentralized-meeting-platform --public --source=. --remote=origin
+   gh repo create opencall --public --source=. --remote=origin
    ```
 
 2. Push the code:
    ```bash
-   git remote add origin https://github.com/ardaerturk/decentralized-meeting-platform.git
+   git remote add origin https://github.com/ardaerturk/opencall.git
    git branch -M main
    git push -u origin main
    ```
@@ -24,8 +24,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/ardaerturk/decentralized-meeting-platform.git
-cd decentralized-meeting-platform
+git clone https://github.com/ardaerturk/opencall.git
+cd opencall
 
 # Install dependencies
 pnpm install

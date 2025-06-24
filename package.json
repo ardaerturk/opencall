@@ -1,11 +1,11 @@
 {
-  "name": "decentralized-meeting-platform",
+  "name": "opencall",
   "version": "0.1.0",
   "description": "Open source, peer-to-peer video conferencing with end-to-end encryption",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/ardaerturk/decentralized-meeting-platform"
+    "url": "https://github.com/ardaerturk/opencall"
   },
   "scripts": {
     "dev": "pnpm -r --parallel run dev",

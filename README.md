@@ -1,4 +1,4 @@
-# Decentralized Meeting Platform
+# OpenCall
 
 Open source, peer-to-peer video conferencing with end-to-end encryption and no infrastructure costs.
 
@@ -33,8 +33,8 @@ Open source, peer-to-peer video conferencing with end-to-end encryption and no i
 ### Installation
 
 ```bash
-git clone https://github.com/ardaerturk/decentralized-meeting-platform.git
-cd decentralized-meeting-platform
+git clone https://github.com/ardaerturk/opencall.git
+cd opencall
 ```
 
 ```bash
@@ -154,5 +154,5 @@ See [SECURITY.md](SECURITY.md) for details.
 
 ## Support
 
-- [Issues](https://github.com/ardaerturk/decentralized-meeting-platform/issues)
-- [Discussions](https://github.com/ardaerturk/decentralized-meeting-platform/discussions)
+- [Issues](https://github.com/ardaerturk/opencall/issues)
+- [Discussions](https://github.com/ardaerturk/opencall/discussions)
