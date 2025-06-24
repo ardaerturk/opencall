@@ -10,7 +10,7 @@ COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
 COPY packages/core/package.json ./packages/core/
 COPY packages/client/package.json ./packages/client/
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --filter=@opencall/client...
 
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
@@ -19,7 +19,7 @@ COPY --from=deps /app/packages/client/node_modules ./packages/client/node_module
 
 COPY . .
 
-RUN pnpm run build --filter=@opencall/client
+RUN pnpm --filter=@opencall/client... run build
 
 FROM base AS runner
 WORKDIR /app
