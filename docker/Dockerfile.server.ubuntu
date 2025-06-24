@@ -14,15 +14,13 @@ WORKDIR /app
 FROM base AS deps
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
 COPY packages/core/package.json ./packages/core/
-COPY packages/protocol/package.json ./packages/protocol/
 COPY packages/server/package.json ./packages/server/
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --filter=@opencall/server...
 
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages/core/node_modules ./packages/core/node_modules
-COPY --from=deps /app/packages/protocol/node_modules ./packages/protocol/node_modules
 COPY --from=deps /app/packages/server/node_modules ./packages/server/node_modules
 
 COPY . .
@@ -38,17 +36,14 @@ RUN groupadd --system --gid 1001 nodejs
 RUN useradd --system --uid 1001 app
 
 COPY --from=builder /app/packages/core/dist ./packages/core/dist
-COPY --from=builder /app/packages/protocol/dist ./packages/protocol/dist
 COPY --from=builder /app/packages/server/dist ./packages/server/dist
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages/core/node_modules ./packages/core/node_modules
-COPY --from=builder /app/packages/protocol/node_modules ./packages/protocol/node_modules
 COPY --from=builder /app/packages/server/node_modules ./packages/server/node_modules
 
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/packages/core/package.json ./packages/core/
-COPY --from=builder /app/packages/protocol/package.json ./packages/protocol/
 COPY --from=builder /app/packages/server/package.json ./packages/server/
 
 USER app
