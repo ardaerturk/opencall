@@ -22,7 +22,7 @@ services:
   server:
     build:
       context: .
-      dockerfile: docker/Dockerfile.server
+      dockerfile: docker/Dockerfile.server.ubuntu
     ports:
       - "4000:4000"
       - "2000-2020:2000-2020/udp"
