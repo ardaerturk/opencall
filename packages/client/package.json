@@ -1,0 +1,44 @@
+{
+  "name": "@dmp/client",
+  "version": "0.1.0",
+  "description": "React PWA client for the decentralized meeting platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:e2e": "playwright test",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist node_modules .turbo"
+  },
+  "dependencies": {
+    "@dmp/core": "workspace:*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.1",
+    "zustand": "^4.4.7",
+    "@tanstack/react-query": "^5.13.4",
+    "simple-peer": "^9.11.1",
+    "qrcode": "^1.5.3",
+    "workbox-window": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@types/simple-peer": "^9.11.8",
+    "@types/qrcode": "^1.5.5",
+    "@vitejs/plugin-react": "^4.2.1",
+    "@playwright/test": "^1.40.1",
+    "vite": "^5.0.8",
+    "vite-plugin-pwa": "^0.17.4",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.0",
+    "jsdom": "^23.0.1",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "rimraf": "^5.0.5"
+  }
+}

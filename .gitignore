@@ -1,0 +1,32 @@
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment
+.env
+.env.local
+
+# Testing
+coverage/
+
+# Docker
+docker/**/data/
+
+# WASM build
+target/
+pkg/
+
+# IDE
+.vscode/
+.idea/

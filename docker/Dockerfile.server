@@ -1,0 +1,52 @@
+FROM node:20-alpine AS base
+
+RUN apk add --no-cache libc6-compat python3 make g++ linux-headers
+RUN npm install -g pnpm@8.10.0
+
+WORKDIR /app
+
+FROM base AS deps
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
+COPY packages/core/package.json ./packages/core/
+COPY packages/protocol/package.json ./packages/protocol/
+COPY packages/server/package.json ./packages/server/
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+FROM base AS builder
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages/core/node_modules ./packages/core/node_modules
+COPY --from=deps /app/packages/protocol/node_modules ./packages/protocol/node_modules
+COPY --from=deps /app/packages/server/node_modules ./packages/server/node_modules
+
+COPY . .
+
+RUN pnpm run build --filter=@dmp/server...
+
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 app
+
+COPY --from=builder /app/packages/core/dist ./packages/core/dist
+COPY --from=builder /app/packages/protocol/dist ./packages/protocol/dist
+COPY --from=builder /app/packages/server/dist ./packages/server/dist
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages/core/node_modules ./packages/core/node_modules
+COPY --from=builder /app/packages/protocol/node_modules ./packages/protocol/node_modules
+COPY --from=builder /app/packages/server/node_modules ./packages/server/node_modules
+
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/packages/core/package.json ./packages/core/
+COPY --from=builder /app/packages/protocol/package.json ./packages/protocol/
+COPY --from=builder /app/packages/server/package.json ./packages/server/
+
+USER app
+
+EXPOSE 4000 2000-2020/udp 2000-2020/tcp
+
+CMD ["node", "packages/server/dist/index.js"]

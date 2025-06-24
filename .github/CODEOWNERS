@@ -1,0 +1,21 @@
+# Default owner
+* @ardaerturk
+
+# Core packages
+/packages/core/ @ardaerturk
+/packages/protocol/ @ardaerturk
+
+# Frontend
+/packages/client/ @ardaerturk
+
+# Backend
+/packages/server/ @ardaerturk
+
+# Smart contracts
+/packages/contracts/ @ardaerturk
+
+# CI/CD
+/.github/ @ardaerturk
+
+# Security
+/SECURITY.md @ardaerturk

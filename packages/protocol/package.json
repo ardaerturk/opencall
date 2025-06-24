@@ -1,0 +1,40 @@
+{
+  "name": "@dmp/protocol",
+  "version": "0.1.0",
+  "description": "libp2p protocols and MLS implementation for the decentralized meeting platform",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "src"],
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "rimraf dist && npm run build:wasm && tsc",
+    "build:wasm": "cd wasm && ./build.sh",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist node_modules .turbo wasm/target src/mls/wasm"
+  },
+  "dependencies": {
+    "@dmp/core": "workspace:*",
+    "libp2p": "^1.0.10",
+    "@libp2p/interface": "^1.0.1",
+    "@libp2p/crypto": "^3.0.1",
+    "@libp2p/peer-id": "^4.0.1",
+    "@libp2p/webrtc": "^4.0.13",
+    "@libp2p/circuit-relay-v2": "^1.0.10",
+    "@libp2p/identify": "^1.0.9",
+    "@libp2p/pubsub-peer-discovery": "^10.0.1",
+    "@chainsafe/libp2p-gossipsub": "^11.0.1",
+    "uint8arrays": "^5.0.0",
+    "it-pipe": "^3.0.1",
+    "it-pushable": "^3.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.0",
+    "wasm-pack": "^0.12.1"
+  }
+}

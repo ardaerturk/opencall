@@ -1,0 +1,58 @@
+{
+  "name": "decentralized-meeting-platform",
+  "version": "0.1.0",
+  "description": "Open source, peer-to-peer video conferencing with end-to-end encryption",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ardaerturk/decentralized-meeting-platform"
+  },
+  "scripts": {
+    "dev": "pnpm -r --parallel run dev",
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck",
+    "clean": "pnpm -r run clean && rimraf node_modules",
+    "prepare": "husky install"
+  },
+  "keywords": [
+    "webrtc",
+    "p2p",
+    "decentralized",
+    "video-conferencing",
+    "end-to-end-encryption",
+    "mls-protocol",
+    "blockchain",
+    "open-source"
+  ],
+  "author": "Arda Erturk <arda@erturk.dev>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.10.0",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.0",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
+}

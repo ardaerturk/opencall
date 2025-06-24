@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "exactOptionalPropertyTypes": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "baseUrl": ".",
+    "paths": {
+      "@dmp/core": ["packages/core/src"],
+      "@dmp/core/*": ["packages/core/src/*"],
+      "@dmp/client": ["packages/client/src"],
+      "@dmp/client/*": ["packages/client/src/*"],
+      "@dmp/server": ["packages/server/src"],
+      "@dmp/server/*": ["packages/server/src/*"],
+      "@dmp/contracts": ["packages/contracts/src"],
+      "@dmp/contracts/*": ["packages/contracts/src/*"],
+      "@dmp/protocol": ["packages/protocol/src"],
+      "@dmp/protocol/*": ["packages/protocol/src/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
+}

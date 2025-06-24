@@ -1,0 +1,152 @@
+version: '3.8'
+
+services:
+  client:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./packages/client:/app/packages/client
+      - ./packages/core:/app/packages/core
+      - /app/node_modules
+      - /app/packages/client/node_modules
+      - /app/packages/core/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:4000
+    networks:
+      - dmp-network
+
+  server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.server
+    ports:
+      - "4000:4000"
+      - "2000-2020:2000-2020/udp"
+      - "2000-2020:2000-2020/tcp"
+    volumes:
+      - ./packages/server:/app/packages/server
+      - ./packages/core:/app/packages/core
+      - ./packages/protocol:/app/packages/protocol
+      - /app/node_modules
+      - /app/packages/server/node_modules
+      - /app/packages/core/node_modules
+      - /app/packages/protocol/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+      - MEDIASOUP_LISTEN_IP=0.0.0.0
+      - MEDIASOUP_ANNOUNCED_IP=${MEDIASOUP_ANNOUNCED_IP:-127.0.0.1}
+      - RTC_MIN_PORT=2000
+      - RTC_MAX_PORT=2020
+    networks:
+      - dmp-network
+    depends_on:
+      - turn
+      - ipfs
+
+  turn:
+    image: coturn/coturn:4.6.2
+    ports:
+      - "3478:3478/udp"
+      - "3478:3478/tcp"
+      - "5349:5349/udp"
+      - "5349:5349/tcp"
+      - "49152-49200:49152-49200/udp"
+    volumes:
+      - ./docker/coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro
+    command: ["-c", "/etc/coturn/turnserver.conf"]
+    networks:
+      dmp-network:
+        ipv4_address: 172.20.0.10
+    restart: unless-stopped
+
+  ipfs:
+    image: ipfs/kubo:v0.24.0
+    ports:
+      - "5001:5001"
+      - "8080:8080"
+      - "4001:4001"
+    volumes:
+      - ./docker/ipfs/data:/data/ipfs
+      - ./docker/ipfs/export:/export
+    environment:
+      - IPFS_PROFILE=server
+      - IPFS_PATH=/data/ipfs
+    networks:
+      - dmp-network
+    restart: unless-stopped
+
+  hardhat:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.contracts
+    ports:
+      - "8545:8545"
+    volumes:
+      - ./packages/contracts:/app/packages/contracts
+      - ./packages/core:/app/packages/core
+      - /app/node_modules
+      - /app/packages/contracts/node_modules
+      - /app/packages/core/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - dmp-network
+    command: ["npx", "hardhat", "node", "--hostname", "0.0.0.0"]
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/redis/data:/data
+    networks:
+      - dmp-network
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./docker/prometheus/data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - dmp-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:10.2.2
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./docker/grafana/data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - dmp-network
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+networks:
+  dmp-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  ipfs-data:
+  redis-data:
+  prometheus-data:
+  grafana-data:
