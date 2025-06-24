@@ -123,10 +123,10 @@ pnpm test:coverage
 
 ```bash
 # Client only
-pnpm --filter @dmp/client dev
+pnpm --filter @opencall/client dev
 
 # Server only
-pnpm --filter @dmp/server dev
+pnpm --filter @opencall/server dev
 
 # Build all packages
 pnpm build

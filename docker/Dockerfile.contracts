@@ -30,4 +30,4 @@ USER app
 
 EXPOSE 8545
 
-CMD ["pnpm", "--filter=@dmp/contracts", "run", "node"]
+CMD ["pnpm", "--filter=@opencall/contracts", "run", "node"]

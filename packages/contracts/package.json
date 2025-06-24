@@ -12,7 +12,8 @@
     "clean": "hardhat clean && rimraf dist node_modules .turbo",
     "typechain": "hardhat typechain",
     "lint": "solhint 'contracts/**/*.sol'",
-    "build": "npm run compile && npm run typechain"
+    "build": "npm run compile && npm run typechain",
+    "node": "hardhat node"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.1",

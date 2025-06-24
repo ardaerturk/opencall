@@ -19,7 +19,7 @@ COPY --from=deps /app/packages/client/node_modules ./packages/client/node_module
 
 COPY . .
 
-RUN pnpm run build --filter=@dmp/client
+RUN pnpm run build --filter=@opencall/client
 
 FROM base AS runner
 WORKDIR /app

@@ -21,7 +21,7 @@ COPY --from=deps /app/packages/server/node_modules ./packages/server/node_module
 
 COPY . .
 
-RUN pnpm run build --filter=@dmp/server...
+RUN pnpm run build --filter=@opencall/server...
 
 FROM base AS runner
 WORKDIR /app
