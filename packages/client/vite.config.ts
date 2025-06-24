@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Decentralized Meeting Platform',
-        short_name: 'DMP',
-        description: 'Secure, decentralized video meetings with zero knowledge and zero gas fees',
+        name: 'OpenCall',
+        short_name: 'OpenCall',
+        description: 'Open source, peer-to-peer video conferencing with end-to-end encryption',
         theme_color: '#000000',
         background_color: '#ffffff',
         display: 'standalone',

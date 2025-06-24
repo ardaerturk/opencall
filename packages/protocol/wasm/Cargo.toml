@@ -1,10 +1,10 @@
 [package]
-name = "dmp-mls"
+name = "opencall-mls"
 version = "0.1.0"
 edition = "2021"
-authors = ["DMP Contributors"]
+authors = ["OpenCall Contributors"]
 license = "MIT"
-description = "MLS Protocol WebAssembly bindings for the decentralized meeting platform"
+description = "MLS Protocol WebAssembly bindings for OpenCall"
 
 [lib]
 crate-type = ["cdylib"]

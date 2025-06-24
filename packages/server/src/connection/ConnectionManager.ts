@@ -4,7 +4,7 @@ import { Worker } from 'mediasoup/node/lib/types';
 import { Meeting } from '../meetings/Meeting';
 import { P2PMeeting } from '../meetings/P2PMeeting';
 import { SFUMeeting } from '../meetings/SFUMeeting';
-import { MeetingId, MeetingOptions, P2P_PARTICIPANT_LIMIT } from '@dmp/core';
+import { MeetingId, MeetingOptions, P2P_PARTICIPANT_LIMIT } from '@opencall/core';
 import { logger } from '../utils/logger';
 import { mediasoupConfig } from '../mediasoup/config';
 

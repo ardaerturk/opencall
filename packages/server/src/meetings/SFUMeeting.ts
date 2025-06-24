@@ -1,5 +1,5 @@
 import { Meeting, Participant } from './Meeting';
-import { MeetingId, MeetingOptions } from '@dmp/core';
+import { MeetingId, MeetingOptions } from '@opencall/core';
 import * as mediasoup from 'mediasoup';
 import { Worker, Router, Transport, Producer, Consumer } from 'mediasoup/node/lib/types';
 import { logger } from '../utils/logger';

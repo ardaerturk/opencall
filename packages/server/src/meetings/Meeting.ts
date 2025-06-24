@@ -1,4 +1,4 @@
-import { Meeting as MeetingType, MeetingOptions, MeetingId, ConnectionMode } from '@dmp/core';
+import { Meeting as MeetingType, MeetingOptions, MeetingId, ConnectionMode } from '@opencall/core';
 import { EventEmitter } from 'events';
 
 export interface Participant {

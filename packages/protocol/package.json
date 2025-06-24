@@ -1,7 +1,7 @@
 {
-  "name": "@dmp/protocol",
+  "name": "@opencall/protocol",
   "version": "0.1.0",
-  "description": "libp2p protocols and MLS implementation for the decentralized meeting platform",
+  "description": "libp2p protocols and MLS implementation for OpenCall",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -16,7 +16,7 @@
     "clean": "rimraf dist node_modules .turbo wasm/target src/mls/wasm"
   },
   "dependencies": {
-    "@dmp/core": "workspace:*",
+    "@opencall/core": "workspace:*",
     "libp2p": "^2.8.11",
     "@libp2p/interface": "^2.10.4",
     "@libp2p/crypto": "^5.1.6",
