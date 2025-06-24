@@ -1,6 +1,14 @@
-# OpenCall
-
-Open source, peer-to-peer video conferencing with end-to-end encryption and no infrastructure costs.
+<div align="center">
+  <img src="assets/logo.svg" alt="OpenCall Logo" width="120" height="120">
+  
+  # OpenCall
+  
+  **Open source, peer-to-peer video conferencing with end-to-end encryption**
+  
+  [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+  [![CI](https://github.com/ardaerturk/opencall/actions/workflows/ci.yml/badge.svg)](https://github.com/ardaerturk/opencall/actions/workflows/ci.yml)
+  [![Security](https://github.com/ardaerturk/opencall/actions/workflows/security.yml/badge.svg)](https://github.com/ardaerturk/opencall/actions/workflows/security.yml)
+</div>
 
 ## Features
 
@@ -65,7 +73,7 @@ Access the application at http://localhost:3000
 ## Project Structure
 
 ```
-decentralized-meeting-platform/
+opencall/
 ├── packages/
 │   ├── core/          # Shared types, utilities, crypto primitives
 │   ├── client/        # React PWA frontend
@@ -123,10 +131,10 @@ pnpm test:coverage
 
 ```bash
 # Client only
-pnpm --filter @dmp/client dev
+pnpm --filter @opencall/client dev
 
 # Server only
-pnpm --filter @dmp/server dev
+pnpm --filter @opencall/server dev
 
 # Build all packages
 pnpm build
