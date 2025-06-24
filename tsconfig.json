@@ -25,16 +25,16 @@
     "allowUnreachableCode": false,
     "baseUrl": ".",
     "paths": {
-      "@dmp/core": ["packages/core/src"],
-      "@dmp/core/*": ["packages/core/src/*"],
-      "@dmp/client": ["packages/client/src"],
-      "@dmp/client/*": ["packages/client/src/*"],
-      "@dmp/server": ["packages/server/src"],
-      "@dmp/server/*": ["packages/server/src/*"],
-      "@dmp/contracts": ["packages/contracts/src"],
-      "@dmp/contracts/*": ["packages/contracts/src/*"],
-      "@dmp/protocol": ["packages/protocol/src"],
-      "@dmp/protocol/*": ["packages/protocol/src/*"]
+      "@opencall/core": ["packages/core/src"],
+      "@opencall/core/*": ["packages/core/src/*"],
+      "@opencall/client": ["packages/client/src"],
+      "@opencall/client/*": ["packages/client/src/*"],
+      "@opencall/server": ["packages/server/src"],
+      "@opencall/server/*": ["packages/server/src/*"],
+      "@opencall/contracts": ["packages/contracts/src"],
+      "@opencall/contracts/*": ["packages/contracts/src/*"],
+      "@opencall/protocol": ["packages/protocol/src"],
+      "@opencall/protocol/*": ["packages/protocol/src/*"]
     }
   },
   "exclude": [

@@ -1,7 +1,7 @@
 {
-  "name": "@dmp/contracts",
+  "name": "@opencall/contracts",
   "version": "0.1.0",
-  "description": "SKALE smart contracts for the decentralized meeting platform",
+  "description": "SKALE smart contracts for OpenCall",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

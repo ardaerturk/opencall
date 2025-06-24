@@ -1,5 +1,5 @@
 import { Meeting, Participant } from './Meeting';
-import { MeetingId, MeetingOptions } from '@dmp/core';
+import { MeetingId, MeetingOptions } from '@opencall/core';
 import { createLibp2p, Libp2p } from 'libp2p';
 import { webSockets } from '@libp2p/websockets';
 import { webRTC } from '@libp2p/webrtc';

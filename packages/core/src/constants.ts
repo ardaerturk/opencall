@@ -1,4 +1,4 @@
-export const APP_NAME = 'Decentralized Meeting Platform';
+export const APP_NAME = 'OpenCall';
 export const APP_VERSION = '0.1.0';
 
 export const P2P_PARTICIPANT_LIMIT = 3;
@@ -21,7 +21,7 @@ export const LIBP2P_BOOTSTRAP_NODES = [
 export const IPFS_GATEWAY_URL = 'https://ipfs.io';
 export const IPFS_API_URL = '/ip4/127.0.0.1/tcp/5001';
 
-export const SKALE_CHAIN_NAME = 'dmp-chain';
+export const SKALE_CHAIN_NAME = 'opencall-chain';
 export const SKALE_RPC_ENDPOINT = process.env.SKALE_ENDPOINT || '';
 
 export const MLS_CIPHERSUITE = 'MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519';

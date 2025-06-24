@@ -1,7 +1,7 @@
 {
-  "name": "@dmp/client",
+  "name": "@opencall/client",
   "version": "0.1.0",
-  "description": "React PWA client for the decentralized meeting platform",
+  "description": "React PWA client for OpenCall",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,7 +15,7 @@
     "clean": "rimraf dist node_modules .turbo"
   },
   "dependencies": {
-    "@dmp/core": "workspace:*",
+    "@opencall/core": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.1",

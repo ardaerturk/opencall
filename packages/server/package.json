@@ -1,7 +1,7 @@
 {
-  "name": "@dmp/server",
+  "name": "@opencall/server",
   "version": "0.1.0",
-  "description": "Node.js coordination services for the decentralized meeting platform",
+  "description": "Node.js coordination services for OpenCall",
   "main": "dist/index.js",
   "type": "commonjs",
   "scripts": {
@@ -14,7 +14,7 @@
     "clean": "rimraf dist node_modules .turbo"
   },
   "dependencies": {
-    "@dmp/core": "workspace:*",
+    "@opencall/core": "workspace:*",
     "fastify": "^4.25.1",
     "@fastify/cors": "^8.5.0",
     "@fastify/helmet": "^11.1.1",
