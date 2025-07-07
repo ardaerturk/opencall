@@ -32,7 +32,7 @@
     "chai": "^5.2.0",
     "hardhat": "^2.19.2",
     "hardhat-gas-reporter": "^2.3.0",
-    "solhint": "^5.1.0",
+    "solhint": "^6.0.0",
     "solidity-coverage": "^0.8.5",
     "ts-node": "^10.9.2",
     "typechain": "^8.3.2",
