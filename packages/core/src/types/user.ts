@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const UserIdSchema = z.string().min(16).max(64);
 export type UserId = z.infer<typeof UserIdSchema>;
 
-export const UserRoleSchema = z.enum(['guest', 'member', 'premium', 'enterprise']);
+export const UserRoleSchema = z.enum(['guest', 'member', 'premium']);
 export type UserRole = z.infer<typeof UserRoleSchema>;
 
 export interface User {

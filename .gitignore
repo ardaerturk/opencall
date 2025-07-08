@@ -30,3 +30,27 @@ pkg/
 # IDE
 .vscode/
 .idea/
+
+# Enterprise Features (Private)
+# SSO & Authentication
+packages/server/src/auth/sso/
+packages/server/src/auth/enterprise/
+packages/server/src/auth/AuthenticationManager.ts
+
+# API & Services
+packages/server/src/api/enterprise/
+packages/server/src/api/webhooks/
+
+# Audit & Compliance
+packages/server/src/audit/
+packages/server/src/compliance/
+packages/server/src/services/audit/
+packages/server/src/services/compliance/
+
+# Enterprise Types
+packages/core/src/types/enterprise.ts
+
+# Enterprise client features
+packages/client/src/pages/admin/
+packages/client/src/components/admin/
+packages/client/src/services/enterprise/
