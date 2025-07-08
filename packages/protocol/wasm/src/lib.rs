@@ -2,6 +2,7 @@ mod mls_client;
 mod types;
 mod error;
 mod utils;
+mod storage;
 
 use wasm_bindgen::prelude::*;
 
