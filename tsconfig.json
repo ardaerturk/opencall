@@ -25,8 +25,8 @@
     "allowUnreachableCode": false,
     "baseUrl": ".",
     "paths": {
-      "@opencall/core": ["packages/core/src"],
-      "@opencall/core/*": ["packages/core/src/*"],
+      "@opencall/core": ["packages/core/dist"],
+      "@opencall/core/*": ["packages/core/dist/*"],
       "@opencall/client": ["packages/client/src"],
       "@opencall/client/*": ["packages/client/src/*"],
       "@opencall/server": ["packages/server/src"],
