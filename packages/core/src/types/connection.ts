@@ -35,6 +35,9 @@ export interface ParticipantMedia {
   screenTrack?: MediaTrack;
 }
 
+// Define RTCIceCredentialType if not available in the environment
+type RTCIceCredentialType = 'password' | 'oauth';
+
 export interface IceServer {
   urls: string | string[];
   username?: string;

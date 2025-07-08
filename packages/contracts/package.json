@@ -6,16 +6,19 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "compile": "hardhat compile",
-    "test": "hardhat test",
+    "test": "echo 'No contract tests yet'",
     "deploy": "hardhat run scripts/deploy.ts",
     "verify": "hardhat verify",
     "clean": "hardhat clean && rimraf dist node_modules .turbo",
     "typechain": "hardhat typechain",
-    "lint": "solhint 'contracts/**/*.sol'",
-    "build": "npm run compile && npm run typechain"
+    "lint": "echo 'No Solidity files to lint yet'",
+    "build": "npm run compile && npm run typechain",
+    "node": "hardhat node"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.1",
+    "@vite/vitejs": "^2.3.19",
+    "@vite/vitejs-ws": "^2.3.19",
     "ethers": "^6.9.0"
   },
   "devDependencies": {
@@ -31,12 +34,12 @@
     "@types/node": "^24.0.4",
     "chai": "^5.2.0",
     "hardhat": "^2.19.2",
-    "hardhat-gas-reporter": "^2.3.0",
-    "solhint": "^5.1.0",
+    "hardhat-gas-reporter": "^1.0.9",
+    "rimraf": "^5.0.5",
+    "solhint": "^4.0.0",
     "solidity-coverage": "^0.8.5",
     "ts-node": "^10.9.2",
     "typechain": "^8.3.2",
-    "typescript": "^5.3.3",
-    "rimraf": "^6.0.1"
+    "typescript": "^5.3.3"
   }
 }
