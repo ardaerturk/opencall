@@ -28,9 +28,9 @@ export abstract class Meeting extends EventEmitter {
     this.mode = this.determineMode();
   }
 
-  abstract async addParticipant(participant: Participant): Promise<void>;
-  abstract async removeParticipant(participantId: string): Promise<void>;
-  abstract async close(): Promise<void>;
+  abstract addParticipant(participant: Participant): Promise<void>;
+  abstract removeParticipant(participantId: string): Promise<void>;
+  abstract close(): Promise<void>;
   abstract getConnectionInfo(): any;
 
   protected determineMode(): ConnectionMode {
@@ -64,7 +64,7 @@ export abstract class Meeting extends EventEmitter {
   }
 
   protected generateJoinLink(): string {
-    const baseUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+    const baseUrl = process.env['CLIENT_URL'] || 'http://localhost:3000';
     return `${baseUrl}/meeting/${this.id}`;
   }
 }

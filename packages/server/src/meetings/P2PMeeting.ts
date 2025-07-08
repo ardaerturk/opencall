@@ -48,11 +48,9 @@ export class P2PMeeting extends Meeting {
               ],
             },
           }),
-          circuitRelayTransport({
-            discoverRelays: 1,
-          }),
+          circuitRelayTransport(),
         ],
-        connectionEncryption: [noise()],
+        connectionEncrypters: [noise()],
         streamMuxers: [yamux()],
         services: {
           identify: identify(),
