@@ -5,7 +5,10 @@
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "dev": "tsc --watch",
     "build": "rimraf dist && tsc",
@@ -16,6 +19,8 @@
     "clean": "rimraf dist node_modules .turbo"
   },
   "dependencies": {
+    "@vite/vitejs": "^2.3.19",
+    "@vite/vitejs-ws": "^2.3.19",
     "zod": "^3.22.4"
   },
   "devDependencies": {
