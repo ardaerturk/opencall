@@ -1,0 +1,336 @@
+.container {
+  background: var(--surface-primary);
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.shareCount {
+  font-size: 14px;
+  color: var(--text-secondary);
+  background: var(--surface-secondary);
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.shareButton {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.shareButton:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.shareButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stopButton {
+  background: var(--danger);
+}
+
+.stopButton:hover {
+  background: var(--danger-hover);
+}
+
+.qualitySelector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.qualitySelector label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  background: var(--surface-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.annotationControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface-secondary);
+  border-radius: 8px;
+}
+
+.annotationButton {
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.annotationButton:hover {
+  background: var(--surface-tertiary);
+}
+
+.annotationButton.active {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.annotationTypes {
+  display: flex;
+  gap: 4px;
+}
+
+.typeButton {
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.typeButton:hover {
+  background: var(--surface-tertiary);
+}
+
+.typeButton.active {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.colorPicker {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface-primary);
+  border-radius: 6px;
+}
+
+.colorButton {
+  width: 24px;
+  height: 24px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.colorButton:hover {
+  transform: scale(1.1);
+}
+
+.colorButton.selected {
+  border-color: var(--primary);
+}
+
+.clearButton {
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clearButton:hover {
+  background: var(--surface-tertiary);
+}
+
+.layoutControls {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-primary);
+}
+
+.layoutControls h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.layoutButtons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.layoutButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.layoutButton:hover {
+  background: var(--surface-tertiary);
+}
+
+.layoutButton.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.layoutIcon {
+  width: 40px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.focusLayout {
+  width: 32px;
+  height: 24px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+.gridLayout {
+  display: grid;
+  grid-template-columns: repeat(2, 14px);
+  grid-template-rows: repeat(2, 11px);
+  gap: 2px;
+}
+
+.gridLayout::before,
+.gridLayout::after,
+.gridLayout::v-before,
+.gridLayout::v-after {
+  content: '';
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.sideBySideLayout {
+  display: flex;
+  gap: 2px;
+}
+
+.sideBySideLayout::before,
+.sideBySideLayout::after {
+  content: '';
+  width: 18px;
+  height: 24px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+.activeShares {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-primary);
+}
+
+.activeShares h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.sharesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shareItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--surface-secondary);
+  border-radius: 8px;
+}
+
+.shareInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.quality {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.annotatingIndicator {
+  font-size: 16px;
+  animation: pulse 1.5s ease infinite;
+}
+
+.annotationCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: all;
+  z-index: 1000;
+}
+
+/* CSS Variables */
+:root {
+  --danger: #ff4444;
+  --danger-hover: #cc0000;
+}
