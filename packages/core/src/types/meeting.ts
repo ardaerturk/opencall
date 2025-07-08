@@ -6,11 +6,11 @@ export type MeetingId = z.infer<typeof MeetingIdSchema>;
 export const MeetingStateSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('idle') }),
   z.object({ type: z.literal('connecting'), meetingId: MeetingIdSchema }),
-  z.object({ 
-    type: z.literal('connected'), 
+  z.object({
+    type: z.literal('connected'),
     meetingId: MeetingIdSchema,
     peers: z.array(z.string()),
-    encryptionState: z.enum(['initializing', 'ready', 'error'])
+    encryptionState: z.enum(['initializing', 'ready', 'error']),
   }),
   z.object({ type: z.literal('error'), error: z.string() }),
 ]);
