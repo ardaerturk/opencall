@@ -1,0 +1,70 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: white;
+}
+
+.modeIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modeIndicator.transitioning {
+  animation: pulse 1s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.icon {
+  font-size: 16px;
+}
+
+.label {
+  font-weight: 500;
+}
+
+.qualityIndicator {
+  display: flex;
+  gap: 12px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.qualityIndicator.good {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.qualityIndicator.fair {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.qualityIndicator.poor {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+}
+
+.metric {
+  font-family: monospace;
+}
+
+.participantCount {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}

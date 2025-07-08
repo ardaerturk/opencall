@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["WebWorker", "ES2022"],
+    "types": []
+  },
+  "include": [
+    "src/services/encryption/encryptionWorker.ts",
+    "src/services/encryption/decryptionWorker.ts"
+  ]
+}

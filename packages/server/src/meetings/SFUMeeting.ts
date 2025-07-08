@@ -24,7 +24,7 @@ interface ParticipantTransports {
 }
 
 export class SFUMeeting extends Meeting {
-  private router: Router;
+  private router!: Router;
   private participantTransports = new Map<string, ParticipantTransports>();
 
   constructor(
@@ -131,13 +131,17 @@ export class SFUMeeting extends Meeting {
   }
 
   async createWebRtcTransport(participantId: string, direction: 'send' | 'recv'): Promise<SFUConnectionInfo['transportOptions']> {
+    const listenIp: any = {
+      ip: process.env['MEDIASOUP_LISTEN_IP'] || '0.0.0.0',
+    };
+    
+    const announcedIp = process.env['MEDIASOUP_ANNOUNCED_IP'];
+    if (announcedIp) {
+      listenIp.announcedIp = announcedIp;
+    }
+    
     const transport = await this.router.createWebRtcTransport({
-      listenIps: [
-        {
-          ip: process.env.MEDIASOUP_LISTEN_IP || '0.0.0.0',
-          announcedIp: process.env.MEDIASOUP_ANNOUNCED_IP || undefined,
-        },
-      ],
+      listenIps: [listenIp],
       enableUdp: true,
       enableTcp: true,
       preferUdp: true,
@@ -186,7 +190,7 @@ export class SFUMeeting extends Meeting {
 
   async produce(
     participantId: string,
-    transportId: string,
+    _transportId: string,
     kind: mediasoup.types.MediaKind,
     rtpParameters: mediasoup.types.RtpParameters,
     appData?: any

@@ -1,167 +1,335 @@
 use crate::error::{Error, Result};
+use crate::storage::MLSStorage;
 use crate::types::*;
-use mls_rs::client_builder::ClientBuilder;
-use mls_rs::identity::{Credential, SigningIdentity};
-use mls_rs::mls_rs_codec::{MlsDecode, MlsEncode};
-use mls_rs::{Client, Group, MlsMessage};
-use mls_rs_provider_rustcrypto::RustCryptoProvider;
-use serde_wasm_bindgen::{from_value, to_value};
+use openmls::prelude::*;
+use openmls_basic_credential::SignatureKeyPair;
+use openmls_rust_crypto::OpenMlsRustCrypto;
+use serde_wasm_bindgen::to_value;
 use wasm_bindgen::prelude::*;
 
+/// The main MLS client that manages groups and cryptographic operations
 #[wasm_bindgen]
 pub struct MLSClient {
-    client: Client<RustCryptoProvider>,
+    identity: Vec<u8>,
+    crypto_provider: OpenMlsRustCrypto,
+    storage: MLSStorage,
+    credential: Credential,
+    signature_keys: SignatureKeyPair,
 }
 
 #[wasm_bindgen]
 impl MLSClient {
-    #[wasm_bindgen(constructor)]
-    pub fn new(identity_bytes: &[u8]) -> Result<MLSClient> {
-        let crypto_provider = RustCryptoProvider::default();
+    /// Initialize a new MLS client with the given identity
+    #[wasm_bindgen(js_name = initialize)]
+    pub fn new(identity: String) -> Result<MLSClient> {
+        let crypto_provider = OpenMlsRustCrypto::default();
+        let storage = MLSStorage::new();
         
-        let signing_identity = SigningIdentity::new(
-            Credential::Basic(identity_bytes.to_vec()),
-            crypto_provider.signature_key_from_random()?
-        );
+        // Create credential from identity
+        let identity_bytes = identity.as_bytes().to_vec();
+        let credential = Credential::new_basic(identity_bytes.clone());
         
-        let client = ClientBuilder::new()
-            .crypto_provider(crypto_provider)
-            .identity_provider(signing_identity)
+        // Generate signature key pair
+        let signature_keys = SignatureKeyPair::new(SignatureScheme::ED25519)
+            .map_err(|e| Error::CryptoError(e.to_string()))?;
+        
+        // Store the signature key pair
+        signature_keys
+            .store(&storage)
+            .map_err(|e| Error::StorageError(e.to_string()))?;
+        
+        Ok(MLSClient {
+            identity: identity_bytes,
+            crypto_provider,
+            storage,
+            credential,
+            signature_keys,
+        })
+    }
+    
+    /// Create a new MLS group
+    #[wasm_bindgen(js_name = createGroup)]
+    pub fn create_group(&self, group_id: Vec<u8>) -> Result<MLSGroup> {
+        let mls_group_config = MlsGroupCreateConfig::builder()
+            .crypto_config(CryptoConfig::default())
             .build();
         
-        Ok(MLSClient { client })
-    }
-    
-    #[wasm_bindgen(js_name = createGroup)]
-    pub fn create_group(&mut self, group_id: &[u8]) -> Result<MLSGroup> {
-        let group = self.client.create_group(Default::default())?;
+        let mut group = MlsGroup::new_with_group_id(
+            &self.crypto_provider,
+            &self.signature_keys,
+            &mls_group_config,
+            group_id.clone().into(),
+            CredentialWithKey {
+                credential: self.credential.clone(),
+                signature_key: self.signature_keys.public().into(),
+            },
+        )
+        .map_err(|e| Error::OpenMlsError(e.to_string()))?;
+        
+        // Store the group
+        group
+            .save(&self.storage)
+            .map_err(|e| Error::StorageError(e.to_string()))?;
         
         Ok(MLSGroup {
-            group: Some(group),
-            pending_commit: None,
+            group_id,
+            crypto_provider: self.crypto_provider.clone(),
+            storage: self.storage.clone(),
         })
     }
     
+    /// Join an existing group using a welcome message
     #[wasm_bindgen(js_name = joinGroup)]
-    pub fn join_group(&mut self, welcome_bytes: &[u8]) -> Result<MLSGroup> {
-        let welcome = MlsMessage::decode(welcome_bytes)?;
+    pub fn join_group(&self, welcome_bytes: &[u8]) -> Result<MLSGroup> {
+        let welcome = MlsMessageIn::tls_deserialize_exact(welcome_bytes)
+            .map_err(|e| Error::CodecError(e.to_string()))?;
         
-        let group = self.client.join_group(None, &welcome)?;
-        group.commit_pending_proposals()?;
+        let welcome = match welcome.extract() {
+            MlsMessageBodyIn::Welcome(w) => w,
+            _ => return Err(Error::InvalidMessageType("Expected welcome message".to_string())),
+        };
+        
+        let mls_group_config = MlsGroupJoinConfig::builder()
+            .crypto_config(CryptoConfig::default())
+            .build();
+        
+        let mut group = MlsGroup::new_from_welcome(
+            &self.crypto_provider,
+            &mls_group_config,
+            welcome,
+            Some(&self.storage),
+        )?;
+        
+        // Get the group ID
+        let group_id = group.group_id().as_slice().to_vec();
+        
+        // Store the group
+        group
+            .save(&self.storage)
+            .map_err(|e| Error::StorageError(e.to_string()))?;
         
         Ok(MLSGroup {
-            group: Some(group),
-            pending_commit: None,
+            group_id,
+            crypto_provider: self.crypto_provider.clone(),
+            storage: self.storage.clone(),
         })
     }
     
-    #[wasm_bindgen(js_name = createKeyPackage)]
-    pub fn create_key_package(&self) -> Result<Vec<u8>> {
-        let key_package = self.client.generate_key_package_message()?;
-        Ok(key_package.encode_to_vec()?)
+    /// Export a key package for this client
+    #[wasm_bindgen(js_name = exportKeyPackage)]
+    pub fn export_key_package(&self) -> Result<Vec<u8>> {
+        let key_package = KeyPackage::builder()
+            .build(
+                CryptoConfig::default(),
+                &self.crypto_provider,
+                &self.signature_keys,
+                CredentialWithKey {
+                    credential: self.credential.clone(),
+                    signature_key: self.signature_keys.public().into(),
+                },
+            )
+            .map_err(|e| Error::OpenMlsError(e.to_string()))?;
+        
+        // Store the key package
+        key_package
+            .hash_ref(&self.crypto_provider)
+            .map_err(|e| Error::CryptoError(e.to_string()))
+            .and_then(|hash_ref| {
+                self.storage
+                    .write_key_package(&hash_ref, &key_package)
+                    .map_err(|e| Error::StorageError(e.to_string()))
+            })?;
+        
+        key_package
+            .tls_serialize_detached()
+            .map_err(|e| Error::CodecError(e.to_string()))
     }
 }
 
+/// Represents an MLS group
 #[wasm_bindgen]
 pub struct MLSGroup {
-    group: Option<Group<RustCryptoProvider>>,
-    pending_commit: Option<MlsMessage>,
+    group_id: Vec<u8>,
+    crypto_provider: OpenMlsRustCrypto,
+    storage: MLSStorage,
 }
 
 #[wasm_bindgen]
 impl MLSGroup {
+    /// Add a member to the group using their key package
     #[wasm_bindgen(js_name = addMember)]
-    pub fn add_member(&mut self, key_package_bytes: &[u8]) -> Result<JsValue> {
-        let group = self.group.as_mut()
-            .ok_or_else(|| Error::InvalidState("Group not initialized".to_string()))?;
-            
-        let key_package = MlsMessage::decode(key_package_bytes)?;
-        let commit = group.commit_external([key_package], &[])?;
+    pub fn add_member(&self, key_package_bytes: &[u8]) -> Result<JsValue> {
+        let mut group = self.load_group()?;
         
-        self.pending_commit = Some(commit.commit_message.clone());
+        let key_package = KeyPackageIn::tls_deserialize_exact(key_package_bytes)
+            .map_err(|e| Error::CodecError(e.to_string()))?;
         
-        to_value(&MLSCommit {
-            commit: commit.commit_message.encode_to_vec()?,
-            welcome: commit.welcome_messages
-                .into_iter()
-                .map(|w| w.encode_to_vec())
-                .collect::<Result<Vec<_>>>()?,
-        }).map_err(|e| Error::SerializationError(e.to_string()))
+        let (mls_message_out, welcome_out, _group_info) = group
+            .add_members(&self.crypto_provider, &self.storage, &[key_package])?;
+        
+        // Save the updated group state
+        group
+            .save(&self.storage)
+            .map_err(|e| Error::StorageError(e.to_string()))?;
+        
+        let commit_bytes = mls_message_out
+            .tls_serialize_detached()
+            .map_err(|e| Error::CodecError(e.to_string()))?;
+        
+        let welcome_bytes = if let Some(welcome) = welcome_out {
+            vec![welcome
+                .tls_serialize_detached()
+                .map_err(|e| Error::CodecError(e.to_string()))?]
+        } else {
+            vec![]
+        };
+        
+        let commit = MLSCommit {
+            commit: commit_bytes,
+            welcome: welcome_bytes,
+        };
+        
+        to_value(&commit).map_err(|e| Error::SerializationError(e.to_string()))
     }
     
-    #[wasm_bindgen(js_name = removeMember)]  
-    pub fn remove_member(&mut self, member_id: &str) -> Result<JsValue> {
-        let group = self.group.as_mut()
-            .ok_or_else(|| Error::InvalidState("Group not initialized".to_string()))?;
-            
-        // Find member by credential
-        let members = group.members()?;
-        let member_to_remove = members.iter()
-            .find(|m| {
-                if let Credential::Basic(data) = &m.credential {
+    /// Remove a member from the group
+    #[wasm_bindgen(js_name = removeMember)]
+    pub fn remove_member(&self, member_id: &str) -> Result<JsValue> {
+        let mut group = self.load_group()?;
+        
+        // Find the member by credential
+        let member_to_remove = group
+            .members()
+            .find(|member| {
+                if let Credential::Basic(data) = &member.credential {
                     String::from_utf8_lossy(data) == member_id
                 } else {
                     false
                 }
             })
             .ok_or_else(|| Error::MemberNotFound(member_id.to_string()))?;
-            
-        let commit = group.commit_external([], &[member_to_remove.index])?;
-        self.pending_commit = Some(commit.commit_message.clone());
         
-        to_value(&MLSCommit {
-            commit: commit.commit_message.encode_to_vec()?,
-            welcome: vec![],
-        }).map_err(|e| Error::SerializationError(e.to_string()))
+        let leaf_index = member_to_remove.index;
+        
+        let (mls_message_out, welcome_out, _group_info) = group
+            .remove_members(&self.crypto_provider, &self.storage, &[leaf_index])?;
+        
+        // Save the updated group state
+        group
+            .save(&self.storage)
+            .map_err(|e| Error::StorageError(e.to_string()))?;
+        
+        let commit_bytes = mls_message_out
+            .tls_serialize_detached()
+            .map_err(|e| Error::CodecError(e.to_string()))?;
+        
+        let welcome_bytes = if let Some(welcome) = welcome_out {
+            vec![welcome
+                .tls_serialize_detached()
+                .map_err(|e| Error::CodecError(e.to_string()))?]
+        } else {
+            vec![]
+        };
+        
+        let commit = MLSCommit {
+            commit: commit_bytes,
+            welcome: welcome_bytes,
+        };
+        
+        to_value(&commit).map_err(|e| Error::SerializationError(e.to_string()))
     }
     
-    #[wasm_bindgen(js_name = encrypt)]
-    pub fn encrypt(&mut self, plaintext: &[u8]) -> Result<JsValue> {
-        let group = self.group.as_mut()
-            .ok_or_else(|| Error::InvalidState("Group not initialized".to_string()))?;
-            
-        let ciphertext = group.encrypt_application_message(plaintext, vec![])?;
+    /// Encrypt a message for the group
+    #[wasm_bindgen(js_name = encryptMessage)]
+    pub fn encrypt_message(&self, plaintext: &[u8]) -> Result<JsValue> {
+        let mut group = self.load_group()?;
         
-        to_value(&MLSCiphertext {
-            data: ciphertext.encode_to_vec()?,
-            epoch: group.current_epoch(),
-        }).map_err(|e| Error::SerializationError(e.to_string()))
+        let mls_message_out = group
+            .create_message(&self.crypto_provider, &self.storage, plaintext)
+            .map_err(|e| Error::OpenMlsError(e.to_string()))?;
+        
+        let ciphertext_bytes = mls_message_out
+            .tls_serialize_detached()
+            .map_err(|e| Error::CodecError(e.to_string()))?;
+        
+        let ciphertext = MLSCiphertext {
+            data: ciphertext_bytes,
+            epoch: group.epoch().as_u64(),
+        };
+        
+        to_value(&ciphertext).map_err(|e| Error::SerializationError(e.to_string()))
     }
     
-    #[wasm_bindgen(js_name = decrypt)]
-    pub fn decrypt(&mut self, ciphertext_js: JsValue) -> Result<Vec<u8>> {
-        let group = self.group.as_mut()
-            .ok_or_else(|| Error::InvalidState("Group not initialized".to_string()))?;
-            
-        let ciphertext: MLSCiphertext = from_value(ciphertext_js)
-            .map_err(|e| Error::SerializationError(e.to_string()))?;
-            
-        let mls_message = MlsMessage::decode(&ciphertext.data)?;
-        let (plaintext, _) = group.process_incoming_message(mls_message)?;
+    /// Decrypt a message from the group
+    #[wasm_bindgen(js_name = decryptMessage)]
+    pub fn decrypt_message(&self, ciphertext_bytes: &[u8]) -> Result<Vec<u8>> {
+        let mut group = self.load_group()?;
         
-        match plaintext {
-            mls_rs::ReceivedMessage::ApplicationMessage(data) => Ok(data.data().to_vec()),
-            _ => Err(Error::InvalidMessageType("Expected application message".to_string())),
+        let mls_message = MlsMessageIn::tls_deserialize_exact(ciphertext_bytes)
+            .map_err(|e| Error::CodecError(e.to_string()))?;
+        
+        let unverified_message = group
+            .parse_message(mls_message, &self.crypto_provider, &self.storage)
+            .map_err(|e| Error::OpenMlsError(e.to_string()))?;
+        
+        let processed_message = group
+            .process_unverified_message(unverified_message, None, &self.crypto_provider, &self.storage)?;
+        
+        // Save the updated group state if needed
+        group
+            .save(&self.storage)
+            .map_err(|e| Error::StorageError(e.to_string()))?;
+        
+        match processed_message.into_content() {
+            ProcessedMessageContent::ApplicationMessage(app_msg) => {
+                Ok(app_msg.into_bytes())
+            }
+            ProcessedMessageContent::ProposalMessage(_) => {
+                Err(Error::InvalidMessageType("Received proposal, expected application message".to_string()))
+            }
+            ProcessedMessageContent::ExhumerMessage(_) => {
+                Err(Error::InvalidMessageType("Received exhumer message".to_string()))
+            }
+            ProcessedMessageContent::StagedCommitMessage(_) => {
+                Err(Error::InvalidMessageType("Received commit, expected application message".to_string()))
+            }
         }
     }
     
-    #[wasm_bindgen(js_name = getCurrentEpoch)]
-    pub fn get_current_epoch(&self) -> Result<u64> {
-        let group = self.group.as_ref()
-            .ok_or_else(|| Error::InvalidState("Group not initialized".to_string()))?;
-            
-        Ok(group.current_epoch())
-    }
-    
-    #[wasm_bindgen(js_name = processPendingCommit)]
-    pub fn process_pending_commit(&mut self) -> Result<()> {
-        let group = self.group.as_mut()
-            .ok_or_else(|| Error::InvalidState("Group not initialized".to_string()))?;
-            
-        if let Some(commit) = self.pending_commit.take() {
-            group.process_incoming_message(commit)?;
-        }
+    /// Process a pending commit
+    #[wasm_bindgen(js_name = processCommit)]
+    pub fn process_commit(&self, commit_bytes: &[u8]) -> Result<()> {
+        let mut group = self.load_group()?;
+        
+        let mls_message = MlsMessageIn::tls_deserialize_exact(commit_bytes)
+            .map_err(|e| Error::CodecError(e.to_string()))?;
+        
+        let unverified_message = group
+            .parse_message(mls_message, &self.crypto_provider, &self.storage)
+            .map_err(|e| Error::OpenMlsError(e.to_string()))?;
+        
+        group.process_unverified_message(unverified_message, None, &self.crypto_provider, &self.storage)?;
+        
+        // Save the updated group state
+        group
+            .save(&self.storage)
+            .map_err(|e| Error::StorageError(e.to_string()))?;
         
         Ok(())
+    }
+    
+    /// Get the current epoch of the group
+    #[wasm_bindgen(js_name = getCurrentEpoch)]
+    pub fn get_current_epoch(&self) -> Result<u64> {
+        let group = self.load_group()?;
+        Ok(group.epoch().as_u64())
+    }
+    
+    /// Helper method to load the group from storage
+    fn load_group(&self) -> Result<MlsGroup> {
+        let group_id: GroupId = self.group_id.clone().into();
+        MlsGroup::load(&self.storage, &group_id)
+            .map_err(|e| Error::StorageError(e.to_string()))?
+            .ok_or_else(|| Error::InvalidState("Group not found in storage".to_string()))
     }
 }

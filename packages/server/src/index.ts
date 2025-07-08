@@ -4,11 +4,24 @@ import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import websocket from '@fastify/websocket';
+import { ConnectionManager } from './connection/ConnectionManager';
+import { SignalingHandler } from './signaling/SignalingHandler';
+import { MediasoupSignalingHandler } from './signaling/MediasoupSignalingHandler';
+import { closeRedisConnections } from './utils/redis';
+import { logger } from './utils/logger';
+import { roomRoutes } from './routes/rooms';
+import { authRoutes, createAuthDecorator } from './routes/auth';
+import { AuthenticationManager } from './auth/AuthenticationManager';
 
 const server = Fastify({
   logger: true,
   trustProxy: true,
 });
+
+// Initialize managers
+const connectionManager = new ConnectionManager();
+const signalingHandler = new SignalingHandler(connectionManager);
+const mediasoupHandler = new MediasoupSignalingHandler(connectionManager);
 
 async function start() {
   try {
@@ -29,6 +42,13 @@ async function start() {
 
     await server.register(websocket);
 
+    // Register authentication routes
+    const authManager = await server.register(authRoutes, { prefix: '/api/auth' });
+
+    // Create authentication decorator
+    const authenticate = createAuthDecorator(authManager as any);
+    server.decorate('authenticate', authenticate);
+
     // Health check endpoint
     server.get('/health', async () => {
       return {
@@ -43,56 +63,90 @@ async function start() {
       return {
         message: 'OpenCall server is running',
         version: '0.1.0',
+        stats: {
+          connections: connectionManager.getStats(),
+          signaling: signalingHandler.getStats(),
+        },
       };
     });
 
-    // WebSocket endpoint
+    // WebSocket signaling endpoint
     server.register(async function (fastify) {
       fastify.get('/ws', { websocket: true }, (connection) => {
-        console.log('WebSocket connected');
-
-        connection.on('message', async (message) => {
-          try {
-            const data = JSON.parse(message.toString());
-            console.log('Received message:', data);
-            
-            // Echo the message back
-            connection.send(JSON.stringify({
-              type: 'echo',
-              data: data,
-              timestamp: new Date().toISOString()
-            }));
-          } catch (error) {
-            console.error('Error handling WebSocket message', error);
+        const socket = connection as any;
+        
+        // Create a message router
+        const originalOn = socket.on.bind(socket);
+        socket.on = function(event: string, handler: Function) {
+          if (event === 'message') {
+            // Intercept messages to route mediasoup messages
+            originalOn('message', (data: Buffer | ArrayBuffer | Buffer[]) => {
+              try {
+                const message = JSON.parse(data.toString());
+                
+                // Route mediasoup messages to MediasoupSignalingHandler
+                if (message.type && message.type.startsWith('mediasoup:')) {
+                  mediasoupHandler.handleConnection(socket);
+                  return;
+                }
+              } catch (error) {
+                // Not JSON or error parsing, let default handler handle it
+              }
+              
+              // Pass non-mediasoup messages to original handler
+              handler(data);
+            });
+          } else {
+            originalOn(event, handler);
           }
-        });
-
-        connection.on('close', () => {
-          console.log('WebSocket disconnected');
-        });
+        };
+        
+        // Pass the WebSocket connection to the SignalingHandler
+        signalingHandler.handleConnection(socket);
       });
     });
 
-    // Graceful shutdown
-    process.on('SIGTERM', async () => {
-      console.log('SIGTERM received, shutting down gracefully');
-      await server.close();
-      process.exit(0);
+    // Register room management routes
+    await server.register(roomRoutes, {
+      connectionManager,
+      roomManager: signalingHandler.getRoomManager(),
     });
 
-    process.on('SIGINT', async () => {
-      console.log('SIGINT received, shutting down gracefully');
-      await server.close();
-      process.exit(0);
-    });
+    // Graceful shutdown
+    const gracefulShutdown = async (signal: string) => {
+      logger.info(`${signal} received, shutting down gracefully`);
+      
+      try {
+        // Stop accepting new connections
+        await server.close();
+        
+        // Shutdown signaling handler
+        await signalingHandler.shutdown();
+        
+        // Shutdown connection manager
+        await connectionManager.shutdown();
+        
+        // Close Redis connections
+        await closeRedisConnections();
+        
+        logger.info('Graceful shutdown complete');
+        process.exit(0);
+      } catch (error) {
+        logger.error('Error during shutdown', error);
+        process.exit(1);
+      }
+    };
+
+    process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+    process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
     // Start server
     const port = Number(process.env['PORT']) || 4000;
     await server.listen({ port, host: '0.0.0.0' });
     
-    console.log(`Server listening on port ${port}`);
+    logger.info(`Server listening on port ${port}`);
   } catch (error) {
-    console.error('Failed to start server', error);
+    logger.error('Failed to start server', error);
     process.exit(1);
   }
 }

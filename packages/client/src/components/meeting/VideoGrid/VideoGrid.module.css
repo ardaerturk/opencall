@@ -1,0 +1,90 @@
+.gridContainer {
+  width: 100%;
+  height: 100%;
+  padding: var(--space-md);
+  background-color: var(--bg-primary);
+}
+
+.grid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  gap: var(--space-md);
+  transition: all var(--transition-normal);
+}
+
+/* Grid layouts for different participant counts */
+.gridSingle {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.gridTwo {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+}
+
+.gridThree {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+}
+
+.gridFour {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.gridMany {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-auto-rows: minmax(200px, 1fr);
+}
+
+/* Mobile layout - stacked */
+.gridMobile {
+  grid-template-columns: 1fr;
+  grid-auto-rows: minmax(200px, auto);
+  max-height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .gridTwo {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, 1fr);
+  }
+  
+  .gridThree {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+  
+  .gridThree > *:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Focus mode for single participant */
+@media (min-width: 1024px) {
+  .gridSingle {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Smooth animations */
+.grid > * {
+  animation: fadeIn var(--transition-normal);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
