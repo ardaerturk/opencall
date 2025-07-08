@@ -1,0 +1,146 @@
+.tileContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.tileContainer:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-md);
+}
+
+.tileContainer:active {
+  transform: scale(0.98);
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mirrored {
+  transform: scaleX(-1);
+}
+
+.noVideo {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--color-primary), #5856D6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.initials {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.5px;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-md);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.tileContainer:hover .overlay {
+  opacity: 1;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.name {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.indicators {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.mutedIcon {
+  font-size: 16px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.qualityIcon {
+  font-size: var(--font-size-xs);
+  letter-spacing: -2px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+/* Speaking indicator */
+.speaking {
+  box-shadow: 0 0 0 3px var(--color-success);
+}
+
+.speakingIndicator {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  width: 12px;
+  height: 12px;
+  background-color: var(--color-success);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Always show overlay on mobile */
+@media (max-width: 768px) {
+  .overlay {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+  }
+}
