@@ -17,7 +17,7 @@ export interface MLSGroup {
   encrypt(plaintext: Uint8Array): Promise<MLSCiphertext>;
   decrypt(ciphertext: MLSCiphertext): Promise<Uint8Array>;
   getCurrentEpoch(): number;
-  processPendingCommit(): Promise<void>;
+  processCommit(commitData: Uint8Array): Promise<void>;
 }
 
 export interface MLSCommit {

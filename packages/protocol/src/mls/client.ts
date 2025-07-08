@@ -1,4 +1,4 @@
-import type { MLSClient as WasmMLSClient, MLSGroup as WasmMLSGroup } from './wasm/mls';
+import type { MLSClient as WasmMLSClient, MLSGroup as WasmMLSGroup, MLSCommit as WasmMLSCommit, MLSCiphertext as WasmMLSCiphertext } from './wasm/mls';
 import type {
   MLSClientConfig,
   MLSGroup,
@@ -33,8 +33,7 @@ export class MLSClient {
     }
 
     try {
-      const identityBytes = new TextEncoder().encode(this.config.identity);
-      this.wasmClient = new wasmModule.MLSClient(identityBytes);
+      this.wasmClient = wasmModule.MLSClient.initialize(this.config.identity);
     } catch (error) {
       throw new MLSError(
         `Failed to initialize MLS client: ${error}`,
@@ -87,16 +86,16 @@ export class MLSClient {
     }
   }
 
-  async createKeyPackage(): Promise<Uint8Array> {
+  async exportKeyPackage(): Promise<Uint8Array> {
     if (!this.wasmClient) {
       throw new MLSError('Client not initialized', MLSErrorCode.INITIALIZATION_FAILED);
     }
 
     try {
-      return this.wasmClient.createKeyPackage();
+      return this.wasmClient.exportKeyPackage();
     } catch (error) {
       throw new MLSError(
-        `Failed to create key package: ${error}`,
+        `Failed to export key package: ${error}`,
         MLSErrorCode.INVALID_KEY_PACKAGE,
       );
     }
@@ -136,7 +135,8 @@ class MLSGroupWrapper implements MLSGroup {
 
   async encrypt(plaintext: Uint8Array): Promise<MLSCiphertext> {
     try {
-      return this.wasmGroup.encrypt(plaintext);
+      const result = this.wasmGroup.encryptMessage(plaintext);
+      return result as MLSCiphertext;
     } catch (error) {
       throw new MLSError(`Failed to encrypt: ${error}`, MLSErrorCode.ENCRYPTION_FAILED);
     }
@@ -144,7 +144,7 @@ class MLSGroupWrapper implements MLSGroup {
 
   async decrypt(ciphertext: MLSCiphertext): Promise<Uint8Array> {
     try {
-      const result = this.wasmGroup.decrypt(ciphertext);
+      const result = this.wasmGroup.decryptMessage(ciphertext.data);
       await this.saveState();
       return result;
     } catch (error) {
@@ -156,9 +156,9 @@ class MLSGroupWrapper implements MLSGroup {
     return this.wasmGroup.getCurrentEpoch();
   }
 
-  async processPendingCommit(): Promise<void> {
+  async processCommit(commitData: Uint8Array): Promise<void> {
     try {
-      this.wasmGroup.processPendingCommit();
+      this.wasmGroup.processCommit(commitData);
       await this.saveState();
     } catch (error) {
       throw new MLSError(`Failed to process commit: ${error}`, MLSErrorCode.EPOCH_MISMATCH);
