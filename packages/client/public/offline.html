@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenCall - Offline</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: #0f172a;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .offline-container {
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+    }
+    
+    .offline-icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 30px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .offline-icon::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(-100%);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+    
+    .offline-icon svg {
+      width: 60px;
+      height: 60px;
+      color: white;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+    
+    p {
+      font-size: 1.125rem;
+      color: #94a3b8;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    
+    .offline-features {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    
+    .offline-features h2 {
+      font-size: 1.25rem;
+      margin-bottom: 16px;
+      color: #f1f5f9;
+    }
+    
+    .feature-list {
+      text-align: left;
+      list-style: none;
+    }
+    
+    .feature-list li {
+      padding: 8px 0;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+    }
+    
+    .feature-list li::before {
+      content: '✓';
+      color: #10b981;
+      margin-right: 12px;
+      font-weight: bold;
+    }
+    
+    .retry-button {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .retry-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+    }
+    
+    .retry-button:active {
+      transform: translateY(0);
+    }
+    
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 16px;
+      padding: 8px 16px;
+      background: #1e293b;
+      border-radius: 20px;
+      font-size: 0.875rem;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      margin-right: 8px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+    
+    .cached-meetings {
+      margin-top: 32px;
+      padding: 24px;
+      background: #1e293b;
+      border-radius: 12px;
+    }
+    
+    .cached-meetings h3 {
+      font-size: 1.125rem;
+      margin-bottom: 16px;
+      color: #f1f5f9;
+    }
+    
+    .meeting-list {
+      list-style: none;
+    }
+    
+    .meeting-item {
+      padding: 12px;
+      background: #334155;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .meeting-item:hover {
+      background: #475569;
+    }
+    
+    .meeting-name {
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    
+    .meeting-time {
+      font-size: 0.875rem;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414" />
+      </svg>
+    </div>
+    
+    <h1>You're Offline</h1>
+    <p>Don't worry! OpenCall works offline too. You can still access some features while you're disconnected.</p>
+    
+    <div class="offline-features">
+      <h2>Available Offline Features</h2>
+      <ul class="feature-list">
+        <li>View cached meeting recordings</li>
+        <li>Access recent chat messages</li>
+        <li>Review meeting notes and documents</li>
+        <li>Prepare for upcoming meetings</li>
+      </ul>
+    </div>
+    
+    <button class="retry-button" onclick="retryConnection()">Try Again</button>
+    
+    <div class="status-indicator">
+      <span class="status-dot"></span>
+      <span>Offline</span>
+    </div>
+    
+    <div class="cached-meetings" id="cachedMeetings" style="display: none;">
+      <h3>Recent Meetings</h3>
+      <ul class="meeting-list" id="meetingList"></ul>
+    </div>
+  </div>
+  
+  <script>
+    // Check if we're really offline
+    function checkConnection() {
+      fetch('/api/health', { method: 'HEAD' })
+        .then(() => {
+          // We're back online!
+          window.location.reload();
+        })
+        .catch(() => {
+          // Still offline
+          setTimeout(checkConnection, 5000);
+        });
+    }
+    
+    // Retry connection manually
+    function retryConnection() {
+      const button = document.querySelector('.retry-button');
+      button.textContent = 'Checking...';
+      button.disabled = true;
+      
+      fetch('/api/health', { method: 'HEAD' })
+        .then(() => {
+          window.location.reload();
+        })
+        .catch(() => {
+          button.textContent = 'Try Again';
+          button.disabled = false;
+        });
+    }
+    
+    // Load cached meetings from IndexedDB
+    async function loadCachedMeetings() {
+      try {
+        const db = await openDB();
+        const meetings = await getMeetings(db);
+        
+        if (meetings.length > 0) {
+          document.getElementById('cachedMeetings').style.display = 'block';
+          const meetingList = document.getElementById('meetingList');
+          
+          meetings.forEach(meeting => {
+            const li = document.createElement('li');
+            li.className = 'meeting-item';
+            li.onclick = () => openMeeting(meeting.id);
+            
+            li.innerHTML = `
+              <div class="meeting-name">${meeting.name}</div>
+              <div class="meeting-time">${formatTime(meeting.lastAccessed)}</div>
+            `;
+            
+            meetingList.appendChild(li);
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load cached meetings:', error);
+      }
+    }
+    
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open('opencall-offline', 1);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+    
+    function getMeetings(db) {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['meetings'], 'readonly');
+        const store = transaction.objectStore('meetings');
+        const request = store.getAll();
+        
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      });
+    }
+    
+    function formatTime(timestamp) {
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diff = now - date;
+      
+      if (diff < 3600000) {
+        return Math.floor(diff / 60000) + ' minutes ago';
+      } else if (diff < 86400000) {
+        return Math.floor(diff / 3600000) + ' hours ago';
+      } else {
+        return Math.floor(diff / 86400000) + ' days ago';
+      }
+    }
+    
+    function openMeeting(meetingId) {
+      // Navigate to cached meeting view
+      window.location.href = `/meeting/${meetingId}?offline=true`;
+    }
+    
+    // Start checking connection
+    checkConnection();
+    loadCachedMeetings();
+    
+    // Listen for online event
+    window.addEventListener('online', () => {
+      window.location.reload();
+    });
+  </script>
+</body>
+</html>
