@@ -8,6 +8,8 @@
   [![React](https://img.shields.io/badge/React-18-blue)](https://reactjs.org/)
   [![WebRTC](https://img.shields.io/badge/WebRTC-Enabled-green)](https://webrtc.org/)
   [![E2E Encrypted](https://img.shields.io/badge/E2E-Encrypted-red)](https://messaginglayersecurity.rocks/)
+  [![CI](https://github.com/ardaerturk/opencall/actions/workflows/ci.yml/badge.svg)](https://github.com/ardaerturk/opencall/actions/workflows/ci.yml)
+  [![Security](https://github.com/ardaerturk/opencall/actions/workflows/security.yml/badge.svg)](https://github.com/ardaerturk/opencall/actions/workflows/security.yml)
   
   **Military-grade secure video meetings with zero signup, zero gas fees, and zero compromise.**
 </div>
