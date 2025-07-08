@@ -12,7 +12,7 @@
     "build:cdn": "VITE_USE_CDN=true npm run build",
     "build:workers": "webpack --config webpack.worker.config.js",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
     "lint": "eslint src --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",

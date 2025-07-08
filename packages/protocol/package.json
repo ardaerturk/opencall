@@ -13,7 +13,7 @@
     "dev": "tsc --watch",
     "build": "rimraf dist && npm run build:wasm && tsc",
     "build:wasm": "cd wasm && ./build.sh",
-    "test": "vitest",
+    "test": "vitest run --passWithNoTests",
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist node_modules .turbo wasm/target src/mls/wasm"
