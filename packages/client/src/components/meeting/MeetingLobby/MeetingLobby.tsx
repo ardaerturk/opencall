@@ -143,7 +143,7 @@ export const MeetingLobby: React.FC<MeetingLobbyProps> = ({
                     className={styles.loginButton}
                     onClick={() => setShowAuthModal(true)}
                   >
-                    Login for premium features
+                    Login as member
                   </button>
                 </div>
               )}
