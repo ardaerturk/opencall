@@ -43,7 +43,10 @@ export interface MemberInfo {
 }
 
 export class MLSError extends Error {
-  constructor(message: string, public code: MLSErrorCode) {
+  constructor(
+    message: string,
+    public code: MLSErrorCode,
+  ) {
     super(message);
     this.name = 'MLSError';
   }
