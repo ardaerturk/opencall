@@ -5,24 +5,29 @@
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "dev": "tsc --watch",
     "build": "rimraf dist && tsc",
-    "test": "vitest",
+    "test": "vitest run --passWithNoTests",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist node_modules .turbo"
   },
   "dependencies": {
+    "@vite/vitejs": "^2.3.19",
+    "@vite/vitejs-ws": "^2.3.19",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0",
-    "@vitest/coverage-v8": "^1.0.0",
-    "rimraf": "^5.0.5",
+    "@types/node": "^24.0.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "rimraf": "^6.0.1",
     "typescript": "^5.3.3",
-    "vitest": "^1.0.0"
+    "vitest": "^3.2.4"
   }
 }

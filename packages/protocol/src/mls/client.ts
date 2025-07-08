@@ -27,7 +27,7 @@ export class MLSClient {
       } catch (error) {
         throw new MLSError(
           `Failed to load MLS WASM module: ${error}`,
-          MLSErrorCode.INITIALIZATION_FAILED
+          MLSErrorCode.INITIALIZATION_FAILED,
         );
       }
     }
@@ -37,7 +37,7 @@ export class MLSClient {
     } catch (error) {
       throw new MLSError(
         `Failed to initialize MLS client: ${error}`,
-        MLSErrorCode.INITIALIZATION_FAILED
+        MLSErrorCode.INITIALIZATION_FAILED,
       );
     }
   }
@@ -50,20 +50,17 @@ export class MLSClient {
     try {
       const groupIdBytes = new TextEncoder().encode(groupId);
       const wasmGroup = this.wasmClient.createGroup(groupIdBytes);
-      
+
       const group = new MLSGroupWrapper(groupId, wasmGroup, this.storage);
       this.groups.set(groupId, group);
-      
+
       if (this.storage) {
         await this.storage.saveGroupState(groupId, await group.serialize());
       }
-      
+
       return group;
     } catch (error) {
-      throw new MLSError(
-        `Failed to create group: ${error}`,
-        MLSErrorCode.GROUP_NOT_FOUND
-      );
+      throw new MLSError(`Failed to create group: ${error}`, MLSErrorCode.GROUP_NOT_FOUND);
     }
   }
 
@@ -75,20 +72,17 @@ export class MLSClient {
     try {
       const wasmGroup = this.wasmClient.joinGroup(welcome);
       const groupId = crypto.randomUUID(); // Extract from welcome in real implementation
-      
+
       const group = new MLSGroupWrapper(groupId, wasmGroup, this.storage);
       this.groups.set(groupId, group);
-      
+
       if (this.storage) {
         await this.storage.saveGroupState(groupId, await group.serialize());
       }
-      
+
       return group;
     } catch (error) {
-      throw new MLSError(
-        `Failed to join group: ${error}`,
-        MLSErrorCode.GROUP_NOT_FOUND
-      );
+      throw new MLSError(`Failed to join group: ${error}`, MLSErrorCode.GROUP_NOT_FOUND);
     }
   }
 
@@ -102,7 +96,7 @@ export class MLSClient {
     } catch (error) {
       throw new MLSError(
         `Failed to export key package: ${error}`,
-        MLSErrorCode.INVALID_KEY_PACKAGE
+        MLSErrorCode.INVALID_KEY_PACKAGE,
       );
     }
   }
@@ -116,7 +110,7 @@ class MLSGroupWrapper implements MLSGroup {
   constructor(
     private groupId: string,
     private wasmGroup: WasmMLSGroup,
-    private storage?: MLSStorageProvider
+    private storage?: MLSStorageProvider,
   ) {}
 
   async addMember(keyPackage: Uint8Array): Promise<MLSCommit> {
@@ -125,10 +119,7 @@ class MLSGroupWrapper implements MLSGroup {
       await this.saveState();
       return result;
     } catch (error) {
-      throw new MLSError(
-        `Failed to add member: ${error}`,
-        MLSErrorCode.MEMBER_NOT_FOUND
-      );
+      throw new MLSError(`Failed to add member: ${error}`, MLSErrorCode.MEMBER_NOT_FOUND);
     }
   }
 
@@ -138,10 +129,7 @@ class MLSGroupWrapper implements MLSGroup {
       await this.saveState();
       return result;
     } catch (error) {
-      throw new MLSError(
-        `Failed to remove member: ${error}`,
-        MLSErrorCode.MEMBER_NOT_FOUND
-      );
+      throw new MLSError(`Failed to remove member: ${error}`, MLSErrorCode.MEMBER_NOT_FOUND);
     }
   }
 
@@ -150,10 +138,7 @@ class MLSGroupWrapper implements MLSGroup {
       const result = this.wasmGroup.encryptMessage(plaintext);
       return result as MLSCiphertext;
     } catch (error) {
-      throw new MLSError(
-        `Failed to encrypt: ${error}`,
-        MLSErrorCode.ENCRYPTION_FAILED
-      );
+      throw new MLSError(`Failed to encrypt: ${error}`, MLSErrorCode.ENCRYPTION_FAILED);
     }
   }
 
@@ -163,10 +148,7 @@ class MLSGroupWrapper implements MLSGroup {
       await this.saveState();
       return result;
     } catch (error) {
-      throw new MLSError(
-        `Failed to decrypt: ${error}`,
-        MLSErrorCode.DECRYPTION_FAILED
-      );
+      throw new MLSError(`Failed to decrypt: ${error}`, MLSErrorCode.DECRYPTION_FAILED);
     }
   }
 
@@ -179,10 +161,7 @@ class MLSGroupWrapper implements MLSGroup {
       this.wasmGroup.processCommit(commitData);
       await this.saveState();
     } catch (error) {
-      throw new MLSError(
-        `Failed to process commit: ${error}`,
-        MLSErrorCode.EPOCH_MISMATCH
-      );
+      throw new MLSError(`Failed to process commit: ${error}`, MLSErrorCode.EPOCH_MISMATCH);
     }
   }
 

@@ -31,11 +31,11 @@ export class IndexedDBMLSStorage implements MLSStorageProvider {
 
   async saveKeyPackage(id: string, data: Uint8Array): Promise<void> {
     if (!this.db) await this.initialize();
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(['keyPackages'], 'readwrite');
       const store = transaction.objectStore('keyPackages');
-      
+
       const request = store.put({ id, data: Array.from(data), timestamp: Date.now() });
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
@@ -44,11 +44,11 @@ export class IndexedDBMLSStorage implements MLSStorageProvider {
 
   async loadKeyPackage(id: string): Promise<Uint8Array | null> {
     if (!this.db) await this.initialize();
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(['keyPackages'], 'readonly');
       const store = transaction.objectStore('keyPackages');
-      
+
       const request = store.get(id);
       request.onsuccess = () => {
         const result = request.result;
@@ -60,11 +60,11 @@ export class IndexedDBMLSStorage implements MLSStorageProvider {
 
   async deleteKeyPackage(id: string): Promise<void> {
     if (!this.db) await this.initialize();
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(['keyPackages'], 'readwrite');
       const store = transaction.objectStore('keyPackages');
-      
+
       const request = store.delete(id);
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
@@ -73,15 +73,15 @@ export class IndexedDBMLSStorage implements MLSStorageProvider {
 
   async saveGroupState(groupId: string, state: Uint8Array): Promise<void> {
     if (!this.db) await this.initialize();
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(['groupStates'], 'readwrite');
       const store = transaction.objectStore('groupStates');
-      
-      const request = store.put({ 
-        groupId, 
-        state: Array.from(state), 
-        updatedAt: Date.now() 
+
+      const request = store.put({
+        groupId,
+        state: Array.from(state),
+        updatedAt: Date.now(),
       });
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
@@ -90,11 +90,11 @@ export class IndexedDBMLSStorage implements MLSStorageProvider {
 
   async loadGroupState(groupId: string): Promise<Uint8Array | null> {
     if (!this.db) await this.initialize();
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(['groupStates'], 'readonly');
       const store = transaction.objectStore('groupStates');
-      
+
       const request = store.get(groupId);
       request.onsuccess = () => {
         const result = request.result;
@@ -106,11 +106,11 @@ export class IndexedDBMLSStorage implements MLSStorageProvider {
 
   async deleteGroupState(groupId: string): Promise<void> {
     if (!this.db) await this.initialize();
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(['groupStates'], 'readwrite');
       const store = transaction.objectStore('groupStates');
-      
+
       const request = store.delete(groupId);
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
@@ -119,13 +119,13 @@ export class IndexedDBMLSStorage implements MLSStorageProvider {
 
   async clearAll(): Promise<void> {
     if (!this.db) await this.initialize();
-    
+
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(['keyPackages', 'groupStates'], 'readwrite');
-      
+
       transaction.objectStore('keyPackages').clear();
       transaction.objectStore('groupStates').clear();
-      
+
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
     });
