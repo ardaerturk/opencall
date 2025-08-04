@@ -36,9 +36,9 @@
     "uint8arrays": "^5.0.0"
   },
   "devDependencies": {
-    "@types/node": "^24.0.4",
+    "@types/node": "^24.1.0",
     "rimraf": "^6.0.1",
-    "typescript": "^5.3.3",
+    "typescript": "^5.9.2",
     "vitest": "^3.2.4",
     "wasm-pack": "^0.13.1"
   }

@@ -22,24 +22,24 @@
     "ethers": "^6.9.0"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-chai-matchers": "^2.0.2",
-    "@nomicfoundation/hardhat-ethers": "^3.0.5",
-    "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
-    "@nomicfoundation/hardhat-toolbox": "^6.0.0",
-    "@nomicfoundation/hardhat-verify": "^2.0.2",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.1.0",
+    "@nomicfoundation/hardhat-ethers": "^3.1.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.1.0",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@nomicfoundation/hardhat-verify": "^2.1.0",
     "@typechain/ethers-v6": "^0.5.1",
     "@typechain/hardhat": "^9.1.0",
     "@types/chai": "^5.2.2",
     "@types/mocha": "^10.0.6",
-    "@types/node": "^24.0.4",
-    "chai": "^5.2.0",
-    "hardhat": "^2.19.2",
-    "hardhat-gas-reporter": "^1.0.9",
-    "rimraf": "^5.0.5",
-    "solhint": "^4.0.0",
+    "@types/node": "^24.1.0",
+    "chai": "^5.2.1",
+    "hardhat": "^2.26.1",
+    "hardhat-gas-reporter": "^2.3.0",
+    "rimraf": "^6.0.1",
+    "solhint": "^6.0.0",
     "solidity-coverage": "^0.8.5",
     "ts-node": "^10.9.2",
     "typechain": "^8.3.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.9.2"
   }
 }
